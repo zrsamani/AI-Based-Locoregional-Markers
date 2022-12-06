@@ -65,7 +65,7 @@ for root, dirs, files in os.walk('TestSamples'):
            # d = random.randint(0, 2)
             p1, p2,p3 = np.where(A2 == R)
             I=getRandomPatch(p1[0],p2[0],p3[0],0,f_FW)
-            if (I.size==0):
+            if (np.asarray(I).size<256):
               continue        
             im = Image.fromarray(I*255)           
             if im.mode != 'RGB':
@@ -73,14 +73,14 @@ for root, dirs, files in os.walk('TestSamples'):
             #Classes
             im.save(str('TestSamples' +'/' + f +  '/Patches/'+sp + f + 'pacth=' + str(p1[0]) + '_' + str(p2[0]) + '_' + str(p3[0]) + '_' + str(0) + '.jpg'))            
             I=getRandomPatch(p1[0],p2[0],p3[0],1,f_FW)
-            if (I.size==0):
+            if (np.asarray(I).size<256):
               continue
             im = Image.fromarray(I*255)            
             if im.mode != 'RGB':
                 im = im.convert('RGB')
             im.save(str('TestSamples' +'/' + f +  '/Patches/'+sp + f + 'pacth=' + str(p1[0]) + '_' + str(p2[0]) + '_' + str(p3[0]) + '_' + str(1) + '.jpg'))
             I=getRandomPatch(p1[0],p2[0],p3[0],2,f_FW)
-            if (I.size==0):
+            if (np.asarray(I).size<256):
               continue
             im = Image.fromarray(I*255)            
             if im.mode != 'RGB':
@@ -126,6 +126,7 @@ for root, dirs, files in os.walk('TestSamples'):
       nfo=5
       for i in range (nfo):        
             model=load_model(model_dir+'best_model_FoldNo'+str(i+1)+'.h5')
+            model=load_model(model_dir+'New-CNN-patches-8-'+str(i)+'.h5')
             predict_x=model.predict(val_features) 
             predictions=np.argmax(predict_x,axis=1)
             prob = model.predict(val_features)
