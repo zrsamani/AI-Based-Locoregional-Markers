@@ -126,7 +126,6 @@ for root, dirs, files in os.walk('TestSamples'):
       nfo=5
       for i in range (nfo):        
             model=load_model(model_dir+'best_model_FoldNo'+str(i+1)+'.h5')
-            model=load_model(model_dir+'New-CNN-patches-8-'+str(i)+'.h5')
             predict_x=model.predict(val_features) 
             predictions=np.argmax(predict_x,axis=1)
             prob = model.predict(val_features)
