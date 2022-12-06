@@ -1,0 +1,20 @@
+Zahra Riahi Samani
+Center for Biomedical Image Computing and Analytics: CBICA
+University of Pennsylvania
+Dec 2022
+
+This directory includes the source code for the following paper:
+Samani et. al. Artificial intelligence-based locoregional markers of brain peri-tumoral microenvironment  
+
+The repository contains the following source codes:
+•	CNN-train.py: extracts patches and train the C-NN.
+•	CNN-Test.py: gets the result of  the CNN on all test samples and writes the result in the results folder.
+•	MaskMaker.py: reads the output of the CNN and produce PMI maps.
+•	LocoregionalMarkers.py: extracts locoregional markers from the PMI map.
+
+The repository contains the following folders:
+•	TrainSamples and TestSamples: each train/test sample should have the mask of tumor and edema, and free water volume fraction from DTI 
+o	train samples should have a list.txt file that contain diagnosis of either 'Met' or 'GBM'
+•	Models: the trained models will be saved here
+•	Results: the CNN-results, PMI maps and locoregional features will be saved here
+
