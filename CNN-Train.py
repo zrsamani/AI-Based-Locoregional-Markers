@@ -53,21 +53,28 @@ def creport (yt, y_pred):
 
 
 ##choosing a  patch in different directions
-def getRandomPatch(i,j,k,d, f_FW,f_tumor):
+def getRandomPatch(i,j,k,d, f_FW,f_tumor,f_edema):
     lr_patch=int(patch_size/2)
+    f_edema_out=np.ones(np.shape(f_edema))-f_edema
     if (d==0):
     
         Patch=f_FW[i,j-lr_patch:j+lr_patch, k-lr_patch:k+lr_patch]
-        Patch2=f_tumor[i,j-lr_patch:j+lr_patch, k-lr_patch:k+lr_patch]     
+        Patch2=f_tumor[i,j-lr_patch:j+lr_patch, k-lr_patch:k+lr_patch] 
+        Patch3=f_edema_out[i,j-lr_patch:j+lr_patch, k-lr_patch:k+lr_patch]    
     if (d==1):
         Patch = f_FW[i-lr_patch:i+lr_patch, j, k-lr_patch:k+lr_patch]
-        Patch2 = f_tumor[i-lr_patch:i+lr_patch, j, k-lr_patch:k+lr_patch]        
+        Patch2 = f_tumor[i-lr_patch:i+lr_patch, j, k-lr_patch:k+lr_patch]  
+        Patch3=f_edema_out[i-lr_patch:i+lr_patch, j, k-lr_patch:k+lr_patch]      
     if (d==2):
         Patch = f_FW[i-lr_patch:i+lr_patch, j-lr_patch:j+lr_patch, k]
-        Patch2 = f_tumor[i-lr_patch:i+lr_patch, j, k-lr_patch:k+lr_patch] 
-    ##see if there is overlap with tumor core
-    #if (np.shape(np.where(Patch2.flatten()==True))[1]>0):
-       # return np.zeros(patch_size)
+        Patch2 = f_tumor[i-lr_patch:i+lr_patch, j, k-lr_patch:k+lr_patch]
+        Patch3 = f_edema_out[i-lr_patch:i+lr_patch, j, k-lr_patch:k+lr_patch]
+         
+    ##check for overlaps with tumor core or healthy brain 
+    if (np.shape(np.where(Patch2.flatten()==True))[1]>0):
+        return [-1]   
+    if (np.shape(np.where(Patch3.flatten()==True))[1]>(0.2*(patch_size**2))):
+        return [-1]
     return Patch
 
 
@@ -110,8 +117,8 @@ for root, dirs, files in os.walk('TrainSamples'):
         for R in random.sample(list(Mask_Indexes), patch_number):
             d = random.randint(0, 2)
             p1, p2,p3 = np.where(A2 == R)
-            I=getRandomPatch(p1[0],p2[0],p3[0],d,f_FW,f_tumor)           
-            if (I.size==0):
+            I=getRandomPatch(p1[0],p2[0],p3[0],d,f_FW,f_tumor,f_edema)           
+            if (np.asarray(I).size<256):
                 continue               
             ITemp0=I * 255
             im = Image.fromarray(I*255)           
